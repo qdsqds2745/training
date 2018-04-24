@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.training.dao.BilingDao">
+
+    <resultMap type="com.training.entity.BilingEntity" id="bilingMap">
+        <result property="bilingId" column="biling_id"/>
+        <result property="pice" column="pice"/>
+        <result property="hoursTerm" column="hours_term"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.training.entity.BilingEntity">
+		select
+			`biling_id`,
+			`pice`,
+			`hours_term`,
+			`gmt_create`,
+			`gmt_modified`
+		from training_biling
+		where biling_id = #{id}
+	</select>
+
+	<select id="queryList" resultType="com.training.entity.BilingEntity">
+		select
+    		`biling_id`,
+    		`pice`,
+    		`hours_term`,
+    		`gmt_create`,
+    		`gmt_modified`
+		from training_biling
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by biling_id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from training_biling
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.training.entity.BilingEntity" useGeneratedKeys="true" keyProperty="bilingId">
+		insert into training_biling(
+			`pice`,
+			`hours_term`
+			)
+		values(
+			#{pice},
+			#{hoursTerm}
+			)
+	</insert>
+	 
+	<update id="update" parameterType="com.training.entity.BilingEntity">
+		update training_biling 
+		<set>
+			<if test="pice != null">`pice` = #{pice}, </if>
+			<if test="hoursTerm != null">`hours_term` = #{hoursTerm}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}</if>
+		</set>
+		where biling_id = #{bilingId}
+	</update>
+	
+	<delete id="delete">
+		delete from training_biling where biling_id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from training_biling where biling_id in 
+		<foreach item="bilingId" collection="array" open="(" separator="," close=")">
+			#{bilingId}
+		</foreach>
+	</delete>
+
+</mapper>

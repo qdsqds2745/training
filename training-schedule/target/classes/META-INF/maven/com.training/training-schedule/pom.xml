@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.training</groupId>
+    <artifactId>training</artifactId>
+    <version>1.0.0</version>
+  </parent>
+  <artifactId>training-schedule</artifactId>
+  <description>定时任务模块</description>
+   <packaging>jar</packaging>
+  
+  
+  <properties>
+        <quartz-version>2.2.3</quartz-version>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.training</groupId>
+            <artifactId>training-common</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>${quartz-version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>c3p0</artifactId>
+                    <groupId>c3p0</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+    </dependencies>
+  
+  
+  
+  
+  
+  
+  
+</project>

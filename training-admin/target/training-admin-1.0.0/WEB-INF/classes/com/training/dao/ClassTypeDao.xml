@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.training.dao.ClassTypeDao">
+
+    <resultMap type="com.training.entity.ClassTypeEntity" id="classTypeMap">
+        <result property="id" column="id"/>
+        <result property="className" column="class_name"/>
+        <result property="bilingId" column="biling_id"/>
+        <result property="startTime" column="start_time"/>
+        <result property="endTime" column="end_time"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="remark" column="remark"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.training.entity.ClassTypeEntity">
+		select
+			`id`,
+			`class_name`,
+			`biling_id`,
+			`start_time`,
+			`end_time`,
+			`gmt_create`,
+			`gmt_modified`,
+			`remark`
+		from training_class_type
+		where id = #{id}
+	</select>
+
+	<select id="queryList" resultType="com.training.entity.ClassTypeEntity">
+		select
+    		`id`,
+    		`class_name`,
+    		`biling_id`,
+    		`start_time`,
+    		`end_time`,
+    		`gmt_create`,
+    		`gmt_modified`,
+    		`remark`
+		from training_class_type
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from training_class_type
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.training.entity.ClassTypeEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into training_class_type(
+			`class_name`,
+			`biling_id`,
+			`start_time`,
+			`end_time`,
+			`gmt_create`,
+			`gmt_modified`,
+			`remark`)
+		values(
+			#{className},
+			#{bilingId},
+			#{startTime},
+			#{endTime},
+			#{gmtCreate},
+			#{gmtModified},
+			#{remark})
+	</insert>
+	 
+	<update id="update" parameterType="com.training.entity.ClassTypeEntity">
+		update training_class_type 
+		<set>
+			<if test="className != null">`class_name` = #{className}, </if>
+			<if test="bilingId != null">`biling_id` = #{bilingId}, </if>
+			<if test="startTime != null">`start_time` = #{startTime}, </if>
+			<if test="endTime != null">`end_time` = #{endTime}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="remark != null">`remark` = #{remark}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from training_class_type where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from training_class_type where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>

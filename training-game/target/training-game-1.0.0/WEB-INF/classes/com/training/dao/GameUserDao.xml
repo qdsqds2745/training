@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.training.dao.GameUserDao">
+
+    <resultMap type="com.training.entity.GameUserEntity" id="gameUserMap">
+        <result property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="mobile" column="mobile"/>
+        <result property="gmtCreate" column="gmt_create"/>
+        <result property="gmtModified" column="gmt_modified"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+	<select id="queryObject" resultType="com.training.entity.GameUserEntity">
+		select
+			`id`,
+			`username`,
+			`mobile`,
+			`gmt_create`,
+			`gmt_modified`,
+			`status`
+		from game_user
+		where id = #{id}
+	</select>
+
+	<select id="queryList" resultType="com.training.entity.GameUserEntity">
+		select
+    		`id`,
+    		`username`,
+    		`mobile`,
+    		`gmt_create`,
+    		`gmt_modified`,
+    		`status`
+		from game_user
+		WHERE 1=1
+		<if test="name != null and name.trim() != ''">
+			AND name LIKE concat('%',#{name},'%')
+		</if>
+        <choose>
+            <when test="sidx != null and sidx.trim() != ''">
+                order by ${sidx} ${order}
+            </when>
+			<otherwise>
+                order by id desc
+			</otherwise>
+        </choose>
+		<if test="offset != null and limit != null">
+			limit #{offset}, #{limit}
+		</if>
+	</select>
+	
+ 	<select id="queryTotal" resultType="int">
+		select count(*) from game_user
+		WHERE 1=1
+        <if test="name != null and name.trim() != ''">
+            AND name LIKE concat('%',#{name},'%')
+        </if>
+	</select>
+	 
+	<insert id="save" parameterType="com.training.entity.GameUserEntity" useGeneratedKeys="true" keyProperty="id">
+		insert into game_user(
+			`username`,
+			`mobile`,
+			`gmt_create`,
+			`gmt_modified`,
+			`status`)
+		values(
+			#{username},
+			#{mobile},
+			#{gmtCreate},
+			#{gmtModified},
+			#{status})
+	</insert>
+	 
+	<update id="update" parameterType="com.training.entity.GameUserEntity">
+		update game_user 
+		<set>
+			<if test="username != null">`username` = #{username}, </if>
+			<if test="mobile != null">`mobile` = #{mobile}, </if>
+			<if test="gmtCreate != null">`gmt_create` = #{gmtCreate}, </if>
+			<if test="gmtModified != null">`gmt_modified` = #{gmtModified}, </if>
+			<if test="status != null">`status` = #{status}</if>
+		</set>
+		where id = #{id}
+	</update>
+	
+	<delete id="delete">
+		delete from game_user where id = #{value}
+	</delete>
+	
+	<delete id="deleteBatch">
+		delete from game_user where id in 
+		<foreach item="id" collection="array" open="(" separator="," close=")">
+			#{id}
+		</foreach>
+	</delete>
+
+</mapper>
