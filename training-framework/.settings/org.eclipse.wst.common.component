@@ -30,5 +30,6 @@
         </dependent-module>
         <property name="context-root" value="training-framework"/>
         <property name="java-output-path" value="/training-framework/target/classes"/>
+        <property name="component.exclusion.patterns" value="WEB-INF/web.xml"/>
     </wb-module>
 </project-modules>
